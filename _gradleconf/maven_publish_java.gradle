@@ -1,0 +1,164 @@
+
+/*
+ * laiyx: 发布到maven仓库的实现，适用于java library，android library请使用maven_upload_android.gradle
+ *
+ * 允许在外部配置关键参数，可使用的ext变量如下（在build.gradle中配置：ext.xxx = yyy）。当未定义时，将取默认值
+ * pomMavenAccount   maven账户信息，ArrayList<String>类型，格式：['xx', 'yy', ...]
+ * pomMavenCentral   maven仓库地址，String类型
+ * pomGroupId        String类型
+ * pomArtifactId    String类型
+ * pomVersionName   String类型
+ * pomDesc           描述信息，String类型
+ * pomSrcDirs       源码目录，ArrayList<String>类型，格式：['xx', 'yy', ...]
+ */
+
+apply plugin: 'maven'
+apply from: "${gradleConfPath}/basic.gradle"
+
+/**
+ * 获取maven私服验证信息，即账户和密码。如果为null，则表示不需要使用账户密码
+ * @return 账户和密码
+ */
+private ArrayList<String> getPomMavenAccount() {
+    getPomExt("pomMavenAccount")
+}
+
+/**
+ * 获取maven仓库地址，如果ext未定义，使用本地maven仓库
+ * @return maven仓库地址
+ */
+private String getPomMavenCentral() {
+    def url = getPomExt("pomMavenCentral")
+    if (url == null) url = localMavenCentral()
+    if (url == null) throw new Exception("无法获取maven仓库地址！")
+    url.toString()
+}
+
+/**
+ * 获取groupId
+ * @return groupId
+ */
+private String getPomGroupId() {
+    def groupId = getPomExt("pomGroupId")
+    if (groupId == null) throw Exception("无法获取groupId！")
+    groupId.toString()
+}
+
+/**
+ * 获取artifactId，如果ext未定义，则使用project名称
+ * @return artifactId
+ */
+private String getPomArtifactId() {
+    def artifactId = getPomExt("pomArtifactId")
+    if (artifactId == null) artifactId = project.name
+    artifactId.toString()
+}
+
+/**
+ * 获取versionName
+ * @return versionName
+ */
+private String getPomVersionName() {
+    def versionName = getPomExt("pomVersionName")
+    if (versionName == null) throw Exception("无法获取versionName！")
+    versionName.toString()
+}
+
+/**
+ * 获取描述信息
+ * 如果ext未定义，则为空
+ * @return 描述信息
+ */
+private String getPomDesc() {
+    def desc = getPomExt("pomDesc")
+    if (desc == null) desc = ''
+    desc.toString()
+}
+
+/**
+ * 获取源码目录
+ * @return 可能为null
+ */
+private ArrayList<String> getPomSrcDirs() {
+    getPomExt("pomSrcDirs")
+}
+
+private def getPomExt(String name) {
+    def extMap = getExtensions().extraProperties
+    if (extMap.has(name)) return extMap.get(name)
+    null
+}
+
+uploadArchives {
+    repositories.mavenDeployer {
+        def centralUrl = getPomMavenCentral()
+        repository('url': centralUrl) {
+            def info = getPomMavenAccount()
+            if (info != null) {
+                authentication(userName: info[0], password: info[1])
+            }
+            pom.project {
+                groupId      getPomGroupId()
+                artifactId   getPomArtifactId()
+                version      getPomVersionName()
+                description  getPomDesc()
+            }
+        }
+    }
+
+    doLast {
+        println "555"
+        def url = getPomMavenCentral()
+        def artifactId = getPomArtifactId()
+        def groupId = getPomGroupId()
+        def versionName = getPomVersionName()
+        def fullyPath = "$url/$groupId/$artifactId"
+        println "${artifactId} 模块的本地maven仓库：$fullyPath, 最新版本为${versionName}. See $url"
+    }
+}
+
+/** 生成javaDoc */
+task javadocs(type: Javadoc) {
+    options {
+        encoding('utf-8')
+        links 'http://docs.oracle.com/javase/8/docs/api'
+    }
+    failOnError = false
+    source getPomSrcDirs()
+}
+
+task javadocsJar(type: Jar, dependsOn: javadocs, group: 'extension') {
+    getArchiveClassifier().set('javadoc')
+    from javadocs.destinationDir
+}
+
+task sourcesJar(type: Jar, group: 'extension') {
+    getArchiveClassifier().set('sources')
+    from getPomSrcDirs()
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocsJar
+}
+
+//手动打包生成的zip包输出目录
+def pomVersion = getPomVersionName()
+def artifactId = getPomArtifactId()
+def pkgPath = getPomGroupId().replaceAll("\\.", "/")
+def outputDir = "${getPomMavenCentral()}/$pkgPath/$artifactId/$pomVersion"
+task zipRelease(type: Zip) {
+    from outputDir
+    destinationDir buildDir
+    archiveName "${artifactId}-${pomVersion}.zip"
+}
+
+/** 手动执行此任务，将得到zip包，路径为目标module的build目录下 */
+task generateZip(group: 'extension') {
+    doLast {
+        println "打包Zip: ${buildDir}/${artifactId}-${pomVersion}.zip"
+        println "输出目录：${outputDir}"
+    }
+}
+generateZip.dependsOn(uploadArchives)
+generateZip.dependsOn(zipRelease)

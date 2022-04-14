@@ -1,0 +1,26 @@
+plugins {
+    id 'java'
+    id 'groovy'
+}
+
+repositories {
+    google()
+    mavenCentral()
+}
+
+java {
+    sourceCompatibility jdk8Ver
+    targetCompatibility jdk8Ver
+}
+
+dependencies {
+    implementation gradleApi()
+    implementation localGroovy()
+//    implementation 'com.android.tools.build:gradle:4.2.0'
+}
+
+ext.pomVersionName = '1.0.0'
+ext.pomGroupId = 'com.qxtx.idea.gradle.plugin.rescheck'
+ext.pomSrcDirs = ['src/main/groovy']
+ext.pomDesc = '项目资源检查插件'
+apply from: javaMavenConfPath
