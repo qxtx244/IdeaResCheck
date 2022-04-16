@@ -1,6 +1,7 @@
 package com.qxtx.idea.gradle.plugin.rescheck.impl
 
 import com.qxtx.idea.gradle.plugin.rescheck.Consts
+import com.qxtx.idea.gradle.plugin.rescheck.Tools
 import groovy.util.slurpersupport.GPathResult
 import org.gradle.api.Project
 import com.qxtx.idea.gradle.plugin.rescheck.AndroidTool
@@ -33,21 +34,19 @@ class PrefixCheckImpl extends Base {
             def logFileEnable = extension.logFile
 
             if (prefix == null || prefix.trim().isEmpty()) {
-                //println "${TAG} 无法检查[${target.name}]的资源名称前缀。请在${target.name}\\build.gradle中正确配置'targetPrefix'字段后，重新sync项目。"
+                //println "${TAG} 无法检查[${target.path}]的资源名称前缀。请在${target.path}\\build.gradle中正确配置'targetPrefix'字段后，重新sync项目。"
                 return
             }
 
             //包括target自己
             projectCount = target.allprojects.size()
             target.allprojects {
-                if (!isRecursive && project.name != target.name) return
+                if (!isRecursive && project.path != target.path) return
 
                 project.afterEvaluate {
                     //Project project
-                    def pluginMgr = project.getPluginManager()
-                    if (pluginMgr.findPlugin('com.android.application') == null
-                            && pluginMgr.findPlugin('com.android.library') == null) {
-                        println "${TAG} 无法解析${project.name}，因为它不是android library"
+                    if (!Tools.isAndroidModule(project)) {
+                        println "${TAG} 无法解析${project.path}，因为它不是android library"
                     } else {
                         //获取所有资源目录
                         def sets = AndroidTool.findAllResDir(project)

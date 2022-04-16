@@ -44,12 +44,13 @@ gradle插件，主要用于项目中资源的检查。检查会在sync阶段进�
 
 ### 3. **使插件工作**
 1. **插件配置**  
-  在目标module的build.gradle中，添加以下代码
+    在目标module的build.gradle中，添加以下代码  
+    添加插件
     ```
-   //添加插件
    apply plugin: 'res-check'
-   
-   //启用插件
+   ```
+   启用和配置插件
+   ```
    ResCheck {
         //是否将结果输出到文件，文件目录路径默认为目标module的根目录/插件名称/。默认为false
         logFile true
@@ -68,8 +69,7 @@ gradle插件，主要用于项目中资源的检查。检查会在sync阶段进�
             //当检查未通过时，是否打断gradle工作。默认为false
             force true
             /*
-             * 目标module依赖的其它module，以project path表示，可配置多个。默认为空。
-             *          
+             * 目标module依赖的其它module，以project path表示，可配置多个。默认为空。     
              * 示例1：在gradle工程"Sample"中，主module依赖moduleA。A的绝对路径表示为xxx/Sample/A，project.path=':A'，则配置：
              *        deptModules ':A'        
              * 示例2：在gradle工程"Sample"中，主module依赖moduleA。A的绝对路径表示为xxx/Sample/logic/A，project.path=':logic:A'，则配置：
@@ -82,10 +82,10 @@ gradle插件，主要用于项目中资源的检查。检查会在sync阶段进�
         }
    }
     ```
-2. **执行sync**
-    执行完成后，将在"Build"面板中输出结果，如启用日志文件，则将结果输出到本地文件
+3. **执行sync**
+    执行完成后，将在"Build"面板中输出结果，如已启用日志文件，则结果输出到本地文件
 
-### **4. demo工程**
+### **4. demo**
 demo工程将演示使用ResCheck插件的效果，在demo/build.gradle中添加ResCheck配置。
   + 强制要求资源名称前缀，包括资源文件名称和xml字段名称（不检查assets和raw目录）
   + sync阶段的重名资源检查
