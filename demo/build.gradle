@@ -1,10 +1,6 @@
 buildscript {
-    repositories {
-        maven { url uri(localMavenCentral())}
-    }
-
     dependencies {
-        classpath 'com.qxtx.idea.gradle.plugin.rescheck:ResCheck:1.0.0'
+        classpath files("ResCheck-1.0.0.jar")
     }
 }
 

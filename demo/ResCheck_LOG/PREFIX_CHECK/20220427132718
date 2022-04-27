@@ -1,0 +1,10 @@
+2022年04月27日 13:27:18
+
+============= [ResCheck]#PREFIX_CHECK 未通过检查 ===================
+[demo]: 文件名=icon_color_selector.xml, 位置=D:\QXTX-Development\Project\BINTRAY\ResCheck\demo\src\main\res\color\
+[demo]: 文件名=as_ic.xml, 位置=D:\QXTX-Development\Project\BINTRAY\ResCheck\demo\src\main\res\drawable\
+[demo]: 文件名=activity_demo.xml, 位置=D:\QXTX-Development\Project\BINTRAY\ResCheck\demo\src\main\res\layout\
+[demo]: 资源名=app_name, 位置=D:\QXTX-Development\Project\BINTRAY\ResCheck\demo\src\main\res\values\strings.xml
+=============================================================
+
+

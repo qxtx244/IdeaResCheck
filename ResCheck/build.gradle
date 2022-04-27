@@ -9,8 +9,8 @@ repositories {
 }
 
 java {
-    sourceCompatibility jdk8Ver
-    targetCompatibility jdk8Ver
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
 }
 
 dependencies {
@@ -19,8 +19,20 @@ dependencies {
 //    implementation 'com.android.tools.build:gradle:4.2.0'
 }
 
-ext.pomVersionName = '1.0.0'
-ext.pomGroupId = 'com.qxtx.idea.gradle.plugin.rescheck'
-ext.pomSrcDirs = ['src/main/groovy']
-ext.pomDesc = '项目资源检查插件'
-apply from: javaMavenConfPath
+gradle.buildFinished {
+    delete('jars')
+    copy {
+        includeEmptyDirs false
+        from (buildDir.absolutePath + '/libs') {
+            include '*.jar'
+            rename '(.*).jar', '$1-1.0.0.jar'
+        }
+        into "${projectDir.absolutePath}/jars"
+    }
+}
+
+//ext.pomVersionName = '1.0.0'
+//ext.pomGroupId = 'com.qxtx.idea.gradle.plugin.rescheck'
+//ext.pomSrcDirs = ['src/main/groovy']
+//ext.pomDesc = '项目资源检查插件'
+//apply from: javaMavenConfPath
