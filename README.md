@@ -1,10 +1,10 @@
-**ResCheck**
+**IdeaResCheck**
 =============
 
 ## **概述**
 gradle插件，主要用于项目中资源的检查。检查会在sync阶段进行，而不需要等待漫长的rebuild过程。  
 甚至，gradle不会提示一些非致命的重名文件行为，而是自动覆盖重名资源，导致打包成apk后，运行过程中出现隐患。  
-因此，仅靠android插件自带resourcesPrefix true配置，作用十分有限（仅在打开目标资源文件时，才会提示，不会主动提示或断言）。  
+因此，仅靠android插件自带resourcesPrefix true配置，作用十分有限（仅在打开目标资源文件时，才会提示，不会主动提示或打断编译）。  
 插件现有功能如下：
 + 在sync阶段，对项目中资源的名称前缀检查
 + 在sync阶段，对项目中重名资源的检查
@@ -14,8 +14,8 @@ gradle插件，主要用于项目中资源的检查。检查会在sync阶段进�
 ## **使用**
 
 ### **· 导入插件**
-  1. 打开AS右侧Gradle面板，依次展开ResCheck/ResCheck/Tasks；
-  2. 展开build任务组，双击执行“jar”选项，jar文件输出目录：ResCheck/jars
+  1. 打开AS右侧Gradle面板，依次展开IdeaResCheck/ResCheck/Tasks；
+  2. 展开build任务组，双击执行“jar”选项，jar文件输出目录：IdeaResCheck/ResCheck/jars
   3. 在目标工程的根build.gradle中添加：
      ```
      buildScript {
