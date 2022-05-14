@@ -1,6 +1,6 @@
 buildscript {
     dependencies {
-        classpath files("ResCheck-1.0.0.jar")
+        classpath 'io.github.qxtx244.build:IdeaResCheck:1.0.0'
     }
 }
 

@@ -107,7 +107,6 @@ uploadArchives {
     }
 
     doLast {
-        println "555"
         def url = getPomMavenCentral()
         def artifactId = getPomArtifactId()
         def groupId = getPomGroupId()
@@ -117,20 +116,20 @@ uploadArchives {
     }
 }
 
-/** 生成javaDoc */
-task javadocs(type: Javadoc) {
-    options {
-        encoding('utf-8')
-        links 'http://docs.oracle.com/javase/8/docs/api'
-    }
-    failOnError = false
-    source getPomSrcDirs()
-}
-
-task javadocsJar(type: Jar, dependsOn: javadocs, group: 'extension') {
-    getArchiveClassifier().set('javadoc')
-    from javadocs.destinationDir
-}
+///** 生成javaDoc */
+//task javadocs(type: Javadoc) {
+//    options {
+//        encoding('utf-8')
+//        links 'http://docs.oracle.com/javase/8/docs/api'
+//    }
+//    failOnError = false
+//    source getPomSrcDirs()
+//}
+//
+//task javadocsJar(type: Jar, dependsOn: javadocs, group: 'extension') {
+//    getArchiveClassifier().set('javadoc')
+//    from javadocs.destinationDir
+//}
 
 task sourcesJar(type: Jar, group: 'extension') {
     getArchiveClassifier().set('sources')
@@ -139,26 +138,26 @@ task sourcesJar(type: Jar, group: 'extension') {
 
 artifacts {
     archives sourcesJar
-    archives javadocsJar
+//    archives javadocsJar
 }
 
-//手动打包生成的zip包输出目录
-def pomVersion = getPomVersionName()
-def artifactId = getPomArtifactId()
-def pkgPath = getPomGroupId().replaceAll("\\.", "/")
-def outputDir = "${getPomMavenCentral()}/$pkgPath/$artifactId/$pomVersion"
-task zipRelease(type: Zip) {
-    from outputDir
-    destinationDir buildDir
-    archiveName "${artifactId}-${pomVersion}.zip"
-}
-
-/** 手动执行此任务，将得到zip包，路径为目标module的build目录下 */
-task generateZip(group: 'extension') {
-    doLast {
-        println "打包Zip: ${buildDir}/${artifactId}-${pomVersion}.zip"
-        println "输出目录：${outputDir}"
-    }
-}
-generateZip.dependsOn(uploadArchives)
-generateZip.dependsOn(zipRelease)
+////手动打包生成的zip包输出目录
+//def pomVersion = getPomVersionName()
+//def artifactId = getPomArtifactId()
+//def pkgPath = getPomGroupId().replaceAll("\\.", "/")
+//def outputDir = "${getPomMavenCentral()}/$pkgPath/$artifactId/$pomVersion"
+//task zipRelease(type: Zip) {
+//    from outputDir
+//    destinationDir buildDir
+//    archiveName "${artifactId}-${pomVersion}.zip"
+//}
+//
+///** 手动执行此任务，将得到zip包，路径为目标module的build目录下 */
+//task generateZip(group: 'extension') {
+//    doLast {
+//        println "打包Zip: ${buildDir}/${artifactId}-${pomVersion}.zip"
+//        println "输出目录：${outputDir}"
+//    }
+//}
+//generateZip.dependsOn(uploadArchives)
+//generateZip.dependsOn(zipRelease)

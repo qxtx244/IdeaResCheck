@@ -31,8 +31,5 @@ gradle.buildFinished {
     }
 }
 
-//ext.pomVersionName = '1.0.0'
-//ext.pomGroupId = 'com.qxtx.idea.gradle.plugin.rescheck'
-//ext.pomSrcDirs = ['src/main/groovy']
-//ext.pomDesc = '项目资源检查插件'
-//apply from: javaMavenConfPath
+def mavenConfigPath = "${rootDir.absolutePath}/.gradle/mavenCentral.gradle"
+if (file(mavenConfigPath).exists()) apply from: mavenConfigPath
